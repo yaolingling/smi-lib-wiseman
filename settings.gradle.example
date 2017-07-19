@@ -1,0 +1,2 @@
+include  ':commons-elm'
+project(':commons-elm').projectDir = new File (settingsDir, '../commons-elm')
