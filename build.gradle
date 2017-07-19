@@ -42,6 +42,13 @@ buildscript {
   //rules  = ['dependency-parentheses','overridden-dependency-version','duplicate-dependency-class', 'all-dependency','unused-dependency']
 //}
 
+
+if (JavaVersion.current().isJava8Compatible()) {
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
+}
+
 sonarqube {
     properties {
         property "sonar.projectName", "rackhd :: Wiseman"
