@@ -1,8 +1,8 @@
-### smi-lib-racadm
+### smi-lib-wiseman
 
 ### Overview
 
-The smi-lib-racadm library builds a Java JAR library that makes available classes for interfacing with racadm. It is intended to be used as a dependency in java projects.
+The smi-lib-wiseman library builds a Java JAR library that makes available classes for using the WS-Management protocol. It is intended to be used as a dependency in java projects.
 
 ### How to use
 Under Construction. Not available via Maven Central yet.... 
@@ -11,14 +11,14 @@ Under Construction. Not available via Maven Central yet....
 ~~~
 <dependency>
     <groupId>com.dell.isg.smi</groupId>
-    <artifactId>racadmlib</artifactId>
-    <version>1.0.1</version>
+    <artifactId>wiseman</artifactId>
+    <version>1.0-SNAPSHOT</version>
 </dependency>
 ~~~
 
 ##### Gradle Example:
 ~~~
-compile(group: 'com.dell.isg.smi', name: 'racadmlib', version: '1.0.1')
+compile(group: 'com.dell.isg.smi', name: 'wiseman', version: '1.0-SNAPSHOT')
 ~~~
 
 ### Support
