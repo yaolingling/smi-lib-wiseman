@@ -1,0 +1,123 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: "com.github.hierynomus.license"
+apply plugin: 'org.sonarqube'
+apply plugin: 'maven-publish'
+apply plugin: "com.jfrog.artifactory"
+//apply plugin: 'nebula.lint'
+
+sourceCompatibility = 1.8
+version = "${version}"
+group = 'com.dell.isg.smi'
+targetCompatibility = 1.8
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/gen-src'
+           // srcDir 'src/main/ext-src'
+        }
+    }
+}
+
+buildscript {
+   repositories {
+    mavenLocal()
+	maven {
+		url "${artifactory_contextUrl}/libs-release"
+		url "https://plugins.gradle.org/m2/"
+	}
+  }
+  dependencies {
+ 	classpath "io.spring.gradle:dependency-management-plugin:1.0.2.RELEASE"
+    classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.4.15"
+    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2.1"
+    classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.13.1"
+    //classpath 'com.netflix.nebula:gradle-lint-plugin:latest.release'
+  }
+}
+
+//gradleLint {
+  //rules  = ['dependency-parentheses','overridden-dependency-version','duplicate-dependency-class', 'all-dependency','unused-dependency']
+//}
+
+sonarqube {
+    properties {
+        property "sonar.projectName", "SMI :: Wiseman"
+        property "sonar.projectKey", "org.sonarqube:wiseman"
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'wiseman',
+                   'Implementation-Version': version
+    }
+	baseName = 'wiseman'
+}
+
+repositories {
+	mavenLocal()
+	maven {
+		url "${artifactory_contextUrl}/libs-release"
+	}
+}
+
+dependencies {
+    //compile "javax.servlet:servlet-api:2.5"
+	//compile "com.sun.xml.fastinfoset:FastInfoset:1.2.3"
+	//compile "javax.annotation:jsr250-api:1.0"
+	compile "com.sun.xml.ws:jaxws-rt:2.1.7"
+	//compile "ant:ant-launcher:1.6.5"
+    //compile group: 'com.sun.org.apache', name: 'jaxp-ri', version: '1.4'
+    compile group: 'xerces', name: 'xercesImpl', version: '2.11.0'
+
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication){
+            artifact jar
+        }
+    }
+}
+
+license {
+       // header rootProject.file('license-template')
+        //includes(["**/*.java", "**/*.properties"])
+        strictCheck true
+        ignoreFailures true
+        //ext.year = Calendar.getInstance().get(Calendar.YEAR)
+    	//ext.name = 'DELL Inc.'
+}
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+    publish {
+        defaults{ publications ("mavenJava")}
+        repository {
+            repoKey = 'libs-release-local'
+	    // note: username and password being set by bamboo artifactory plugin
+            maven = true
+        }
+    }
+    resolve {
+        repository {
+            repoKey = 'libs-release'
+            maven = true
+        }
+    }
+}
+
