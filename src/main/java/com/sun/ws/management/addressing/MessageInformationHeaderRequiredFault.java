@@ -18,9 +18,12 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com),
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt
  **
- **$Log: not supported by cvs2svn $
+ **$Log: MessageInformationHeaderRequiredFault.java,v $
+ **Revision 1.4  2007/05/30 20:31:06  nbeers
+ **Add HP copyright header
  **
- * $Id: MessageInformationHeaderRequiredFault.java,v 1.4 2007-05-30 20:31:06 nbeers Exp $
+ **
+ * $Id: MessageInformationHeaderRequiredFault.java,v 1.4 2007/05/30 20:31:06 nbeers Exp $
  */
 
 package com.sun.ws.management.addressing;

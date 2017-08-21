@@ -18,17 +18,24 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com),
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt
  **
- **$Log: not supported by cvs2svn $
+ **$Log: XPathFilterFactory.java,v $
  **Revision 1.3  2007/05/30 20:31:06  nbeers
  **Add HP copyright header
  **
  **
- * $Id: XPathFilterFactory.java,v 1.4 2007-10-30 09:50:04 denis_rachal Exp $
+ * $Id: XPathFilterFactory.java,v 1.3 2007/05/30 20:31:06 nbeers Exp $
  */
 
 package com.sun.ws.management.xml;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -54,7 +61,7 @@ public class XPathFilterFactory implements FilterFactory {
      * Filter creation
      * @param content The filter content. In this case an XPath expression (String)
      * located in the list first element.
-     * @param namespaces An XML namespace map.
+     * @param namespaces An XML namespaces map.
      * @return A Filter handling XPath filtering.
      *
      * @throws com.sun.ws.management.soap.FaultException If any WS-MAN related protocol exception occurs.
@@ -68,6 +75,9 @@ public class XPathFilterFactory implements FilterFactory {
         private final String expression;
         private final XPath xpath = com.sun.ws.management.xml.XPath.XPATH_FACTORY.newXPath();
         private final XPathExpression filter;
+        private final NamespaceMap initialNamespaceMap;
+        private final Map<String, String> aggregateNamespaces = new HashMap<String, String>();
+        private NamespaceMap aggregateNamespaceMap = null;
 
         /** Creates a new instance of XPathEnumerationFilter */
         public XPathEnumerationFilter(List filterExpressions, NamespaceMap namespaces)
@@ -87,9 +97,12 @@ public class XPathFilterFactory implements FilterFactory {
                 throw new InvalidMessageFault("Invalid filter expression type: " +
                         expr.getClass().getName());
             }
-            
-            if (null != namespaces) {
-            	xpath.setNamespaceContext(namespaces);
+
+            initialNamespaceMap = namespaces;
+            if (initialNamespaceMap != null) {
+                aggregateNamespaces.putAll(initialNamespaceMap.getMap());
+                aggregateNamespaceMap = new NamespaceMap(aggregateNamespaces);
+                xpath.setNamespaceContext(aggregateNamespaceMap);
             }
 
             // compile the expression just to see if it's valid

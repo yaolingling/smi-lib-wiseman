@@ -18,9 +18,12 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com),
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt
  **
- **$Log: not supported by cvs2svn $
+ **$Log: EnumerationIterator.java,v $
+ **Revision 1.12  2007/05/30 20:31:05  nbeers
+ **Add HP copyright header
  **
- * $Id: EnumerationIterator.java,v 1.12 2007-05-30 20:31:05 nbeers Exp $
+ **
+ * $Id: EnumerationIterator.java,v 1.12 2007/05/30 20:31:05 nbeers Exp $
  */
 
 package com.sun.ws.management.server;

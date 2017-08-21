@@ -19,13 +19,16 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com), 
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt 
  **
- **$Log: not supported by cvs2svn $
+ **$Log: EnumerationMessageValues.java,v $
+ **Revision 1.5  2007/06/18 17:57:11  nbeers
+ **Fix for Issue #119 (EnumerationUtility.buildMessage() generates incorrect msg).
+ **
  **Revision 1.4  2007/05/30 20:31:03  nbeers
  **Add HP copyright header
  **
  ** 
  *
- * $Id: EnumerationMessageValues.java,v 1.5 2007-06-18 17:57:11 nbeers Exp $
+ * $Id: EnumerationMessageValues.java,v 1.5 2007/06/18 17:57:11 nbeers Exp $
  */
 package com.sun.ws.management.enumeration;
 

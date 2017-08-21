@@ -18,21 +18,16 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com),
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt
  **
- **$Log: not supported by cvs2svn $
- **Revision 1.14  2007/10/30 09:27:29  jfdenise
- **WiseMan to take benefit of Sun JAX-WS RI Message API and WS-A offered support.
- **Commit a new JAX-WS Endpoint and a set of Message abstractions to implement WS-Management Request and Response processing on the server side.
- **
+ **$Log: Eventing.java,v $
  **Revision 1.13  2007/05/30 20:31:05  nbeers
  **Add HP copyright header
  **
  **
- * $Id: Eventing.java,v 1.15 2008-01-17 15:19:09 denis_rachal Exp $
+ * $Id: Eventing.java,v 1.13 2007/05/30 20:31:05 nbeers Exp $
  */
 
 package com.sun.ws.management.eventing;
 
-import com.sun.ws.management.MessageUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -119,12 +114,41 @@ public class Eventing extends Addressing {
             throws SOAPException, JAXBException {
 
         removeChildren(getBody(), SUBSCRIBE);
-        final Subscribe sub = MessageUtil.createSubscribe(endTo, deliveryMode, 
-                notifyTo, expires, filter, extensions);
+        final Subscribe sub = FACTORY.createSubscribe();
+
+        if (endTo != null) {
+            sub.setEndTo(endTo);
+        }
+
+        final DeliveryType delivery = FACTORY.createDeliveryType();
+
+        if (deliveryMode != null) {
+            delivery.setMode(deliveryMode);
+        }
+
+        if (notifyTo != null) {
+        	delivery.getContent().add((FACTORY.createNotifyTo(notifyTo)));
+        }
+
+        if (extensions != null) {
+            for (final Object ext : extensions) {
+                delivery.getContent().add(ext);
+            }
+        }
+
+        sub.setDelivery(delivery);
+
+        if (expires != null) {
+            sub.setExpires(expires);
+        }
+
+        if (filter != null) {
+            sub.setFilter(filter);
+        }
 
         getXmlBinding().marshal(sub, getBody());
     }
-    
+
     public void setSubscribeResponse(final EndpointReferenceType mgr, final String expires,
             final Object... extensions)
             throws SOAPException, JAXBException {
@@ -144,23 +168,17 @@ public class Eventing extends Addressing {
     public void setRenew(final String expires) throws SOAPException, JAXBException {
         removeChildren(getBody(), RENEW);
         final Renew renew = FACTORY.createRenew();
-        if (expires != null)
-            renew.setExpires(expires.trim());
+        renew.setExpires(expires.trim());
         getXmlBinding().marshal(renew, getBody());
     }
 
-    public void setRenewResponse(final String expires, final Object... extensions) throws SOAPException, JAXBException {
+    public void setRenewResponse(final String expires) throws SOAPException, JAXBException {
         removeChildren(getBody(), RENEW_RESPONSE);
         final RenewResponse response = FACTORY.createRenewResponse();
         response.setExpires(expires);
-        if (extensions != null) {
-            for (final Object ext : extensions) {
-                response.getAny().add(ext);
-            }
-        }
         getXmlBinding().marshal(response, getBody());
     }
-    
+
     public void setGetStatus() throws SOAPException, JAXBException {
         removeChildren(getBody(), GET_STATUS);
         final GetStatus status = FACTORY.createGetStatus();
@@ -182,8 +200,28 @@ public class Eventing extends Addressing {
 
     public void setSubscriptionEnd(final EndpointReferenceType mgr,
             final String status, final String reason) throws SOAPException, JAXBException {
-        final SubscriptionEnd end = MessageUtil.createSubscriptionEnd(mgr, status, reason);
+
+        if (!DELIVERY_FAILURE_STATUS.equals(status) &&
+                !SOURCE_SHUTTING_DOWN_STATUS.equals(status) &&
+                !SOURCE_CANCELING_STATUS.equals(status)) {
+            throw new IllegalArgumentException("Status must be one of " +
+                    DELIVERY_FAILURE_STATUS + ", " +
+                    SOURCE_SHUTTING_DOWN_STATUS + " or " +
+                    SOURCE_CANCELING_STATUS);
+        }
+
         removeChildren(getBody(), SUBSCRIPTION_END);
+        final SubscriptionEnd end = FACTORY.createSubscriptionEnd();
+        end.setSubscriptionManager(mgr);
+        end.setStatus(status);
+
+        if (reason != null) {
+            final LanguageSpecificStringType localizedReason = FACTORY.createLanguageSpecificStringType();
+            localizedReason.setLang(XML.DEFAULT_LANG);
+            localizedReason.setValue(reason);
+            end.getReason().add(localizedReason);
+        }
+
         getXmlBinding().marshal(end, getBody());
     }
 
@@ -235,10 +273,7 @@ public class Eventing extends Addressing {
     public String getIdentifier() throws JAXBException, SOAPException {
         final JAXBElement<String> value =
         	  (JAXBElement<String>) unbind(getHeader(), IDENTIFIER);
-        if (value == null)
-        	return null;
-        else
-            return value.getValue();
+        return value.getValue();
     }
 
     // retrieve the current subscription EPR
@@ -283,4 +318,5 @@ public class Eventing extends Addressing {
 			setSubscriptionManagerEpr(mgr);
     	}
     }
+
 }

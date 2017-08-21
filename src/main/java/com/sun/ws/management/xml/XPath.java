@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: XPath.java,v 1.9 2006-12-05 10:35:24 jfdenise Exp $
+ * $Id: XPath.java,v 1.9 2006/12/05 10:35:24 jfdenise Exp $
  */
 
 package com.sun.ws.management.xml;

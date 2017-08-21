@@ -19,28 +19,28 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com), 
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt 
  **
- **$Log: not supported by cvs2svn $
- **Revision 1.4  2007/05/30 20:31:04  nbeers
+ **$Log: Utilities.java,v $
+ **Revision 1.2  2007/05/31 19:47:48  nbeers
  **Add HP copyright header
  **
  ** 
  *
- * $Id: WSEnumerationPullIterator.java,v 1.1 2007-10-30 09:28:22 jfdenise Exp $
+ * $Id: Utilities.java,v 1.2 2007/05/31 19:47:48 nbeers Exp $
  */
-package com.sun.ws.management.server;
+package com.sun.ws.management.framework;
 
-import com.sun.ws.management.enumeration.Enumeration;
-import com.sun.ws.management.server.message.WSEnumerationRequest;
-import com.sun.ws.management.server.message.WSEnumerationResponse;
+import java.util.Set;
 
-/**
- * This is an extension of the EnumerationIterator interface that provides
- * the application access to the request and response messages.
- *
- */
-public interface WSEnumerationPullIterator extends EnumerationIterator {
+import org.dmtf.schemas.wbem.wsman._1.wsman.SelectorType;
 
-	public void startPull(final HandlerContext context, final WSEnumerationRequest request);
-	
-	public void endPull(final WSEnumerationResponse response);
+public class Utilities {
+	   public static SelectorType getSelectorByName(String name,Set<SelectorType> selectorSet){
+	    	for (SelectorType selectorType : selectorSet) {
+	    		if(selectorType.getName().equals(name)){
+	    			return selectorType;
+	    		}
+			}
+			return null;
+		}
+
 }

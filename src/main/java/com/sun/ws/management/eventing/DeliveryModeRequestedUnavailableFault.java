@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: DeliveryModeRequestedUnavailableFault.java,v 1.2 2006-05-01 23:32:21 akhilarora Exp $
+ * $Id: DeliveryModeRequestedUnavailableFault.java,v 1.2 2006/05/01 23:32:21 akhilarora Exp $
  */
 
 package com.sun.ws.management.eventing;

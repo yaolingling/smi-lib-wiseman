@@ -18,19 +18,17 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com),
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt
  **
- **$Log: not supported by cvs2svn $
+ **$Log: Management.java,v $
  **Revision 1.11  2007/05/30 20:31:05  nbeers
  **Add HP copyright header
  **
  **
- * $Id: Management.java,v 1.12 2007-11-30 14:32:37 denis_rachal Exp $
+ * $Id: Management.java,v 1.11 2007/05/30 20:31:05 nbeers Exp $
  */
 
 package com.sun.ws.management;
 
 import com.sun.ws.management.addressing.Addressing;
-import com.sun.ws.management.enumeration.Enumeration;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -51,7 +49,6 @@ import org.dmtf.schemas.wbem.wsman._1.wsman.OptionSet;
 import org.dmtf.schemas.wbem.wsman._1.wsman.OptionType;
 import org.dmtf.schemas.wbem.wsman._1.wsman.SelectorSetType;
 import org.dmtf.schemas.wbem.wsman._1.wsman.SelectorType;
-import org.xmlsoap.schemas.ws._2004._09.enumeration.Pull;
 
 public class Management extends Addressing {
 
@@ -154,20 +151,8 @@ public class Management extends Addressing {
     }
 
     public Duration getTimeout() throws JAXBException, SOAPException {
-    	    Duration result = null;
     		final Object value = unbind(getHeader(), OPERATION_TIMEOUT);
-    		if (value != null) {
-    	        result = ((JAXBElement<AttributableDuration>) value).getValue().getValue();
-    		} else {
-    			// wsman:OperationTimeout no set.
-    			// Check if this is a wsen:Pull & wsen:MaxTime was set.
-    			final Enumeration enu = new Enumeration(this);
-    			final Pull pull = enu.getPull();
-    			if (pull != null) {
-    				result = pull.getMaxTime();
-    			}
-    		}
-            return result;
+    	    return value == null ? null : ((JAXBElement<AttributableDuration>) value).getValue().getValue();
     }
 
     public Set<SelectorType> getSelectors() throws JAXBException, SOAPException {

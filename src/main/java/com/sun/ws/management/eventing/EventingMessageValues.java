@@ -19,7 +19,7 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com), 
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt 
  **
- **$Log: not supported by cvs2svn $
+ **$Log: EventingMessageValues.java,v $
  **Revision 1.4  2007/06/19 12:29:33  simeonpinder
  **changes:
  **-set 1.0 release implementation version
@@ -35,7 +35,7 @@
  **
  ** 
  *
- * $Id: EventingMessageValues.java,v 1.5 2008-01-17 15:19:09 denis_rachal Exp $
+ * $Id: EventingMessageValues.java,v 1.4 2007/06/19 12:29:33 simeonpinder Exp $
  */
 package com.sun.ws.management.eventing;
 
@@ -163,7 +163,6 @@ public class EventingMessageValues extends ManagementMessageValues {
 	private String status = DEFAULT_STATUS;
 	private String reason = DEFAULT_REASON;
 	private String replyTo = DEFAULT_REPLY_TO;
-	private String identifier = null;
 	private String[] customXmlBindingPackageList =DEFAULT_CUSTOM_XML_BINDINGS;
 	private ReferenceParametersType referenceParameterType = null;
 	//TODO: change this name as it's not intuitive.
@@ -192,14 +191,6 @@ public class EventingMessageValues extends ManagementMessageValues {
 
 	public void setFilterDialect(String filterDialect) {
 		this.filterDialect = filterDialect;
-	}
-	
-	public void setIdentifier(final String identifier) {
-		this.identifier = identifier;
-	}
-	
-	public String getIdentifier() {
-		return this.identifier;
 	}
 
 	public void setUidScheme(String uidScheme) {

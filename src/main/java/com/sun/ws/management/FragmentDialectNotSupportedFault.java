@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: FragmentDialectNotSupportedFault.java,v 1.2 2006-05-24 00:31:25 akhilarora Exp $
+ * $Id: FragmentDialectNotSupportedFault.java,v 1.2 2006/05/24 00:31:25 akhilarora Exp $
  */
 
 package com.sun.ws.management;

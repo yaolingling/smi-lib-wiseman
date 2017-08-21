@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: XML.java,v 1.2 2006-03-03 20:51:14 akhilarora Exp $
+ * $Id: XML.java,v 1.2 2006/03/03 20:51:14 akhilarora Exp $
  */
 
 package com.sun.ws.management.xml;

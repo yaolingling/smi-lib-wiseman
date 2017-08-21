@@ -19,7 +19,7 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com),
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt
  **
- **$Log: not supported by cvs2svn $
+ **$Log: ManagementUtility.java,v $
  **Revision 1.13  2007/06/19 12:29:33  simeonpinder
  **changes:
  **-set 1.0 release implementation version
@@ -46,7 +46,7 @@
  **
  **
  *
- * $Id: ManagementUtility.java,v 1.14 2007-11-30 14:32:37 denis_rachal Exp $
+ * $Id: ManagementUtility.java,v 1.13 2007/06/19 12:29:33 simeonpinder Exp $
  */
 package com.sun.ws.management;
 
@@ -93,84 +93,79 @@ import com.sun.ws.management.soap.SOAP;
 import com.sun.ws.management.transport.HttpClient;
 import com.sun.ws.management.xml.XmlBinding;
 
-/**
- * This class is meant to provide general utility functionality for Management
- * instances and all of their related extensions.
- * 
+/** This class is meant to provide general utility functionality for
+ *  Management instances and all of their related extensions.
+ *
  * @author Simeon
  */
 public class ManagementUtility {
 
-	// These values are final and static so that they can be uniformly used by
-	// many classes
-	private static final Logger LOG = Logger.getLogger(ManagementUtility.class
-			.getName());
-	private static final org.xmlsoap.schemas.ws._2004._08.addressing.ObjectFactory addressing_factory = new org.xmlsoap.schemas.ws._2004._08.addressing.ObjectFactory();
-	private static final String uidScheme = "uuid:";
-	private static long defaultTimeout = 30000;
+	//These values are final and static so that they can be uniformly used by many classes
+	private static final Logger LOG = Logger.getLogger(ManagementUtility.class.getName());
+	private static final org.xmlsoap.schemas.ws._2004._08.addressing.ObjectFactory
+	   addressing_factory = new org.xmlsoap.schemas.ws._2004._08.addressing.ObjectFactory();
+	private static final String uidScheme ="uuid:";
+	private static final long defaultTimeout =30000;
 	private static Management defautInst = null;
 	private static XmlBinding binding = null;
-	static {
-		try {
-			defautInst = new Management();
-			binding = defautInst.getXmlBinding();
-		} catch (Exception ex) {
-			// eat exception and move on.
+	static{
+		try{
+		  defautInst = new Management();
+		  binding = defautInst.getXmlBinding();
+		}catch(Exception ex){
+			//eat exception and move on.
 		}
 	}
-
-	/**
-	 * Takes an existing SelectorSetType container and a Map<String,String>
-	 * where Key,Value or Name,Value have been supplied are accepted as
-	 * parameters. A SelectorSetType instance including the Map values provided
-	 * are returned.
-	 * 
+	/** Takes an existing SelectorSetType container and a Map<String,String> where
+	 *  Key,Value or Name,Value have been supplied are accepted as parameters.
+	 *  A SelectorSetType instance includind the Map values provided are returned.
+	 *
 	 * @return SelectorSetType instance.
 	 */
-	public static SelectorSetType populateSelectorSetType(
-			Map<String, String> selectors, SelectorSetType selectorContainer) {
-		if (selectorContainer == null) {
-			selectorContainer = new SelectorSetType();
-		}
-		// Now populate the selectorSetType
-		List<SelectorType> selectorList = selectorContainer.getSelector();
+	public static SelectorSetType populateSelectorSetType(Map<String,String> selectors,
+			SelectorSetType selectorContainer){
+			if(selectorContainer==null){
+				selectorContainer = new SelectorSetType();
+			}
+			//Now populate the selectorSetType
+		    List<SelectorType> selectorList = selectorContainer.getSelector();
 
-		// Add a selector to the list
-		for (String key : selectors.keySet()) {
-			SelectorType nameSelector = new SelectorType();
-			nameSelector.setName(key);
-			nameSelector.getContent().add(selectors.get(key));
-			selectorList.add(nameSelector);
-		}
-		return selectorContainer;
+		    // Add a selector to the list
+		    for (String key : selectors.keySet()) {
+		        SelectorType nameSelector = new SelectorType();
+		        nameSelector.setName(key);
+		        nameSelector.getContent().add(selectors.get(key));
+		        selectorList.add(nameSelector);
+			}
+	    return selectorContainer;
 	}
 
-	/**
-	 * Takes a Map<String,String> of selector values and returns a container
-	 * Set<SelectorType> which has the selectors passed in. Ex. Map<String,String>
-	 * selectors = new HashMap<String,String>();
-	 * selectors.put("firstname","Get"); selectors.put("lastname","Guy");
-	 * 
-	 * is wrapped in the appropriate type that will look like
-	 * 
+	/**Takes a Map<String,String> of selector values and returns
+	 * a container Set<SelectorType> which has the selectors
+	 * passed in.
+	 * Ex. Map<String,String> selectors = new HashMap<String,String>();
+	 * 	     selectors.put("firstname","Get");
+	 * 	     selectors.put("lastname","Guy");
+	 *
+	 *    is wrapped in the appropriate type that will look like
+	 *
 	 * <code>
 	 *  &lt;wsman:SelectorSet&gt;
-	 * 	 &lt;wsman:Selector Name="firstname"&gt;Get&lt;/wsman:Selector&gt;
-	 *    &lt;wsman:Selector Name="lastname"&gt;Guy&lt;/wsman:Selector&gt;
-	 *  &lt;/wsman:SelectorSet&gt;
-	 *  </code>
-	 * 
+     * 	 &lt;wsman:Selector Name="firstname"&gt;Get&lt;/wsman:Selector&gt;
+     *    &lt;wsman:Selector Name="lastname"&gt;Guy&lt;/wsman:Selector&gt;
+     *  &lt;/wsman:SelectorSet&gt;
+     *  </code>
+	 *
 	 * @param selectorsAsProperties
 	 * @return set of selectors
 	 */
 	public static Set<SelectorType> createSelectorType(
-			Map<String, String> selectorsAsProperties) {
+			Map<String,String> selectorsAsProperties){
 		Set<SelectorType> selectors = null;
-		if ((selectorsAsProperties != null)
-				&& (selectorsAsProperties.size() > 0)) {
-			selectors = new HashSet<SelectorType>();
+		if((selectorsAsProperties!=null)&&(selectorsAsProperties.size()>0)){
+			selectors =  new HashSet<SelectorType>();
 			Set<String> keyList = selectorsAsProperties.keySet();
-			for (String key : keyList) {
+			for(String key: keyList){
 				SelectorType selector = new SelectorType();
 				selector.setName(key);
 				selector.getContent().add(selectorsAsProperties.get(key));
@@ -180,78 +175,67 @@ public class ManagementUtility {
 		return selectors;
 	}
 
-	/**
-	 * The method takes a SelectorSetType instance and returns the Selectors
-	 * defined in a Map&lt;String,String&gt; instance, with Key,Value being the
-	 * values respectively.
-	 * 
+	/**The method takes a SelectorSetType instance and returns the Selectors defined
+	 * in a Map&lt;String,String&gt; instance, with Key,Value being the values respectively.
+	 *
 	 * @param selectorContainer
 	 * @return Map&lt;String, String&gt; being Selector values
 	 */
-	public static Map<String, String> extractSelectorsAsMap(
-			SelectorSetType selectorContainer) {
-		// Create the Map instance to be returned
-		Map<String, String> map = new HashMap<String, String>();
+	public static Map<String,String> extractSelectorsAsMap(SelectorSetType selectorContainer){
+		//Create the Map instance to be returned
+		Map<String,String> map = new HashMap<String, String>();
 		List<SelectorType> selectorsList = null;
 
-		// populate the Map with the selectorContainer contents
-		if (selectorContainer != null) {
-			selectorsList = selectorContainer.getSelector();
-			map = extractSelectorsAsMap(map, selectorsList);
+		//populate the Map with the selectorContainer contents
+		if(selectorContainer!=null){
+		  selectorsList=selectorContainer.getSelector();
+		  map =extractSelectorsAsMap(map, selectorsList);
 		}
 
 		return map;
 	}
 
-	/**
-	 * The method takes a List&lt;SelectorType&gt; instance and returns the
-	 * Selectors defined in a Map&lt;String,String&gt; instance, with Key,Value
-	 * being the values respectively.
-	 * 
+	/**The method takes a List&lt;SelectorType&gt; instance and returns the Selectors defined
+	 * in a Map&lt;String,String&gt; instance, with Key,Value being the values respectively.
+	 *
 	 * @param map
 	 * @param selectorsList
 	 */
-	public static Map<String, String> extractSelectorsAsMap(
-			Map<String, String> map, List<SelectorType> selectorsList) {
-		if (map == null) {
+	public static Map<String,String> extractSelectorsAsMap(Map<String, String> map,
+			List<SelectorType> selectorsList) {
+		if(map==null){
 			map = new HashMap<String, String>();
 		}
-		if (selectorsList != null) {
-			for (Iterator<SelectorType> iter = selectorsList.iterator(); iter
-					.hasNext();) {
-				SelectorType element = iter.next();
-				if ((element.getName() != null)
-						&& (element.getContent() != null)
-						&& (((String) element.getContent().get(0))).trim()
-								.length() > 0) {
-					map.put(element.getName(), (String) element.getContent()
-							.get(0));
+		if(selectorsList!=null){
+			for (Iterator iter = selectorsList.iterator(); iter.hasNext();) {
+				SelectorType element = (SelectorType) iter.next();
+				if((element.getName()!=null)
+				 &&(element.getContent()!=null)
+				 &&(((String)element.getContent().get(0))).trim().length()>0){
+				  map.put(element.getName(),
+					(String) element.getContent().get(0));
 				}
 			}
 		}
 		return map;
 	}
 
-	/**
-	 * Parses the header list to locate the SOAPElement identified by the QName
+	/** Parses the header list to locate the SOAPElement identified by the QName
 	 * passed in.
-	 * 
+	 *
 	 * @param headers
 	 * @param qualifiedName
 	 * @return SOAPElement of the located header
 	 */
-	public static SOAPElement locateHeader(SOAPElement[] headers,
-			QName qualifiedName) {
+	public static SOAPElement locateHeader(SOAPElement[] headers, QName qualifiedName) {
 		SOAPElement located = null;
-		if ((headers == null) || (qualifiedName == null)) {
+		if((headers==null)||(qualifiedName == null)){
 			return located;
-		} else {
+		}else{
 			for (int i = 0; i < headers.length; i++) {
 				SOAPElement header = headers[i];
-				if (qualifiedName.getLocalPart().equals(
-						header.getElementQName().getLocalPart())
-						&& qualifiedName.getNamespaceURI().equals(
-								header.getElementQName().getNamespaceURI())) {
+				if(qualifiedName.getLocalPart().equals(header.getElementQName().getLocalPart())&&
+				   qualifiedName.getNamespaceURI().equals(header.getElementQName().getNamespaceURI())){
 					return header;
 				}
 			}
@@ -259,12 +243,11 @@ public class ManagementUtility {
 		return located;
 	}
 
-	/**
-	 * Attempts to build a message from the addressing instance passed in and
-	 * with the ManagementMessageValues passed in. Only if the values has not
-	 * already been set in the Addressing instance will the values from the
-	 * constants be used.
-	 * 
+	/**Attempts to build a message from the addressing instance passed in and with
+	 * the ManagementMessageValues passed in.  Only if the values has not already
+	 * been set in the Addressing instance will the values from the constants be
+	 * used.
+	 *
 	 * @param instance
 	 * @param settings
 	 * @return message
@@ -272,396 +255,362 @@ public class ManagementUtility {
 	 * @throws JAXBException
 	 * @throws DatatypeConfigurationException
 	 */
-	public static Management buildMessage(Addressing instance,
-			ManagementMessageValues settings) throws SOAPException,
-			JAXBException, DatatypeConfigurationException {
-		// return reference
+	public static Management buildMessage(Addressing instance,ManagementMessageValues settings)
+		throws SOAPException, JAXBException, DatatypeConfigurationException {
+		//return reference
 		Management message = null;
-		// initialize if not already
-		if (instance == null) {
+		//initialize if not already
+		if(instance == null){
 			message = new Management();
-		} else {// else use Addressing instance passed in.
+		}else{//else use Addressing instance passed in.
 			message = new Management(instance);
 		}
-		// initialize if not already
-		if (settings == null) {
+		//initialize if not already
+		if(settings == null){
 			settings = new ManagementMessageValues();
 		}
-		// Now process the settings values passed in.
-		// Processing the To value
-		if ((message.getTo() == null) || (message.getTo().trim().length() == 0)) {
-			// if defaults set then use them otherwise don't
-			if ((settings.getTo() != null)
-					&& (settings.getTo().trim().length() > 0)) {
+	    //Now process the settings values passed in.
+		//Processing the To value
+		if((message.getTo()==null)||(message.getTo().trim().length()==0)){
+			//if defaults set then use them otherwise don't
+			if((settings.getTo()!=null)&&(settings.getTo().trim().length()>0)){
 				message.setTo(settings.getTo());
 			}
 		}
 
-		// Processing the ResourceURI value
-		if ((message.getResourceURI() == null)
-				|| (message.getResourceURI().trim().length() == 0)) {
-			// if defaults set then use them otherwise don't
-			if ((settings.getResourceUri() != null)
-					&& (settings.getResourceUri().trim().length() > 0)) {
+		  //Processing the ResourceURI value
+		if((message.getResourceURI()==null)||
+				(message.getResourceURI().trim().length()==0)){
+			//if defaults set then use them otherwise don't
+			if((settings.getResourceUri()!=null)&&
+					(settings.getResourceUri().trim().length()>0)){
 				message.setResourceURI(settings.getResourceUri());
 			}
 		}
-		// Processing for xmlBinding
-		if (message.getXmlBinding() == null) {
-			if (settings.getXmlBinding() != null) {
-				message.setXmlBinding(settings.getXmlBinding());
-			} else { // otherwise use/create default one for Management class
-				if (defautInst != null) {
-					message.setXmlBinding(defautInst.getXmlBinding());
-				} else {
-					message.setXmlBinding(new Management().getXmlBinding());
-				}
-			}
+		  //Processing for xmlBinding
+		if(message.getXmlBinding()==null){
+		   if(settings.getXmlBinding()!=null){
+			  message.setXmlBinding(settings.getXmlBinding());
+		   }else{ //otherwise use/create default one for Managemetn class
+			  if(defautInst!=null){
+				 message.setXmlBinding(defautInst.getXmlBinding());
+			  }else{
+			     message.setXmlBinding(new Management().getXmlBinding());
+			  }
+		   }
 		}
 
-		// Processing ReplyTo
-		if ((settings.getReplyTo() != null)
-				&& settings.getReplyTo().trim().length() > 0) {
+		 //Processing ReplyTo
+		if((settings.getReplyTo()!=null)&&
+		    settings.getReplyTo().trim().length()>0){
 			message.setReplyTo(settings.getReplyTo());
-		} else {
+		}else{
 			message.setReplyTo(Addressing.ANONYMOUS_ENDPOINT_URI);
 		}
 
-		// Processing MessageId component
-		if ((settings.getUidScheme() != null)
-				&& (settings.getUidScheme().trim().length() > 0)) {
-			message.setMessageId(settings.getUidScheme()
-					+ UUID.randomUUID().toString());
-		} else {
-			message.setMessageId(ManagementMessageValues.DEFAULT_UID_SCHEME
-					+ UUID.randomUUID().toString());
+		 //Processing MessageId component
+		if((settings.getUidScheme()!=null)&&
+				(settings.getUidScheme().trim().length()>0)){
+		   message.setMessageId(settings.getUidScheme() +
+				   UUID.randomUUID().toString());
+		}else{
+		   message.setMessageId(ManagementMessageValues.DEFAULT_UID_SCHEME +
+			UUID.randomUUID().toString());
 		}
 
-		// Add processing for OperationTimeout
+
+		//Add processing for timeout
 		final DatatypeFactory factory = DatatypeFactory.newInstance();
-		if (settings.getTimeout() > 0) {
-			message.setTimeout(factory.newDuration(settings.getTimeout()));
+		if(settings.getTimeout()>ManagementMessageValues.DEFAULT_TIMEOUT){
+			message.setTimeout(
+			factory.newDuration(
+					settings.getTimeout()));
 		}
 
-		// process the selectors passed in.
-		if ((settings.getSelectorSet() != null)
-				&& (settings.getSelectorSet().size() > 0)) {
-			message.setSelectors(settings.getSelectorSet());
+        //process the selectors passed in.
+        if((settings.getSelectorSet()!=null)&&(settings.getSelectorSet().size()>0)){
+        	message.setSelectors(settings.getSelectorSet());
+        }
+
+		 //Processing MaxEnvelopeSize
+		if((settings.getMaxEnvelopeSize()!=null)&&
+		    settings.getMaxEnvelopeSize().longValue() >0){
+	        final MaxEnvelopeSizeType maxEnvSize = Management.FACTORY.createMaxEnvelopeSizeType();
+	        maxEnvSize.setValue(settings.getMaxEnvelopeSize());
+	        maxEnvSize.getOtherAttributes().put(SOAP.MUST_UNDERSTAND, SOAP.TRUE);
+	        message.setMaxEnvelopeSize(maxEnvSize);
 		}
 
-		// Processing MaxEnvelopeSize
-		if ((settings.getMaxEnvelopeSize() != null)
-				&& settings.getMaxEnvelopeSize().longValue() > 0) {
-			final MaxEnvelopeSizeType maxEnvSize = Management.FACTORY
-					.createMaxEnvelopeSizeType();
-			maxEnvSize.setValue(settings.getMaxEnvelopeSize());
-			maxEnvSize.getOtherAttributes()
-					.put(SOAP.MUST_UNDERSTAND, SOAP.TRUE);
-			message.setMaxEnvelopeSize(maxEnvSize);
-		}
-
-		// Processing Locale
-		if (settings.getLocale() != null) {
+		 //Processing Locale
+		if(settings.getLocale()!=null){
 			message.setLocale(settings.getLocale());
 		}
 
-		// Add processing for other Management components
-		if ((settings.getAdditionalHeaders() != null)
-				&& (settings.getAdditionalHeaders().size() > 0)) {
-			final Iterator<ReferenceParametersType> iter = settings
-					.getAdditionalHeaders().iterator();
-			while (iter.hasNext()) {
-				ReferenceParametersType element = (ReferenceParametersType) iter
-						.next();
+		//Add processing for other Management components
+		if((settings.getAdditionalHeaders()!=null)&&
+			(settings.getAdditionalHeaders().size()>0)){
+			for (Iterator iter = settings.getAdditionalHeaders().iterator(); iter.hasNext();) {
+				ReferenceParametersType element = (ReferenceParametersType) iter.next();
 				message.addHeaders(element);
 			}
 		}
 
-		// process the options passed in.
-		if ((settings.getOptionSet() != null)
-				&& (settings.getOptionSet().size() > 0)) {
-			message.setOptions(settings.getOptionSet());
-		}
+        //process the options passed in.
+        if((settings.getOptionSet()!=null)&&(settings.getOptionSet().size()>0)){
+        	message.setOptions(settings.getOptionSet());
+        }
 
 		return message;
 	}
 
 	public static Management buildMessage(Management existing,
-			Addressing subMessage, boolean trimAdditionalMetadata)
-			throws SOAPException, JAXBException, DatatypeConfigurationException {
-		// return reference
-		Management message = null;
-		// initialize if not already
-		if (subMessage == null) {
+			Addressing subMessage,boolean trimAdditionalMetadata) throws SOAPException, JAXBException,
+			DatatypeConfigurationException{
+		 //return reference
+		 Management message = null;
+		 //initialize if not already
+		 if(subMessage == null){
 			message = new Management();
-		} else {// else use Addressing instance passed in.
+		 }else{//else use Addressing instance passed in.
 			message = new Management(subMessage);
-		}
-		// Populate the new message instance with the values
-		if ((existing != null) && (existing.getHeaders() != null)) {
-			for (SOAPElement header : existing.getHeaders()) {
-				// Don't add the original Action header
-				QName examine = null;
-				if (((examine = header.getElementQName()) != null)
-						&& examine.getLocalPart().equals(
-								Management.ACTION.getLocalPart())) {
-					// Bail out and do not add.
-					continue;
-				}
-				// Don't add the original MessageId if one exists
-				QName mesgId = null;
-				if (((mesgId = header.getElementQName()) != null)
-						&& mesgId.getLocalPart().equals(
-								Management.MESSAGE_ID.getLocalPart())) {
-					// Bail out and do not add.
-					continue;
-				}
-				if (trimAdditionalMetadata) {
-					// if(!AnnotationProcessor.isDescriptiveMetadataElement(
-					// header.getElementQName())){
-					// Node located =
-					// containsHeader(message.getHeader(),header);
-					// if(located!=null){
-					// message.getHeader().removeChild(located);
-					// }
-					// message.getHeader().addChildElement(header);
-					// }
-				} else {
-					// message.getHeader().addChildElement(header);
-					Node located = containsHeader(message.getHeader(), header);
-					if (located != null) {
-						message.getHeader().removeChild(located);
-					}
-					message.getHeader().addChildElement(header);
+		 }
+		 //Populate the new message instance with the values
+		 if((existing!=null)&&(existing.getHeaders()!=null)){
+			 for(SOAPElement header: existing.getHeaders()){
+				 //Don't add the original Action header
+				 QName examine = null;
+				 if(((examine =header.getElementQName())!=null)&&
+						 examine.getLocalPart().equals(Management.ACTION.getLocalPart())){
+					 //Bail out and do not add.
+					 continue;
+				 }
+  				 //Don't add the original MessageId if one exists
+				 QName mesgId = null;
+				 if(((mesgId =header.getElementQName())!=null)&&
+					mesgId.getLocalPart().equals(Management.MESSAGE_ID.getLocalPart())){
+					//Bail out and do not add.
+				   continue;
+				 }
+				if(trimAdditionalMetadata){
+//				  if(!AnnotationProcessor.isDescriptiveMetadataElement(
+//						  header.getElementQName())){
+//				     Node located = containsHeader(message.getHeader(),header);
+//					 if(located!=null){
+//					   message.getHeader().removeChild(located);
+//					 }
+//					 message.getHeader().addChildElement(header);
+//				  }
+				}else{
+//					message.getHeader().addChildElement(header);
+				  Node located = containsHeader(message.getHeader(),header);
+				  if(located!=null){
+					 message.getHeader().removeChild(located);
+				  }
+				  message.getHeader().addChildElement(header);
 				}
 			}
-		}
-		message = buildMessage(message, ManagementMessageValues.newInstance());
+		 }
+		 message = buildMessage(message, ManagementMessageValues.newInstance());
 		return message;
 	}
 
-	/**
-	 * Attempts to extract Selectors returned from a Management instance
-	 * including a CreateResponse type, as a Map&lt;String,String&gt; for
-	 * convenience.
-	 * 
+	/** Attempts to extract Selectors returned from a Management instance including
+	 * a CreateResponse type, as a Map&lt;String,String&gt; for convenience.
+	 *
 	 * @param managementMessage
 	 * @return extracted selectors
 	 * @throws SOAPException
 	 * @throws JAXBException
 	 */
-	public static Map<String, String> extractSelectors(
-			Management managementMessage) throws SOAPException, JAXBException {
-		// stores located selectors
-		Map<String, String> selectors = new HashMap<String, String>();
+	public static Map<String, String> extractSelectors(Management
+			managementMessage) throws SOAPException, JAXBException {
+		//stores located selectors
+		Map<String,String> selectors = new HashMap<String,String>();
 
-		// parse the Management instance passed in for ResourceCreated and
-		// embedded selectors
-		if (managementMessage != null) {
-			EndpointReferenceType crtType = null;
-			if ((managementMessage.getBody() != null)
-					&& (managementMessage.getBody().getFirstChild() != null)) {
-				// Extract dom component
-				Node createContent = managementMessage.getBody()
-						.getFirstChild();
-				try {
-					final JAXBElement<EndpointReferenceType> unmarshal =
-						(JAXBElement<EndpointReferenceType>) binding.unmarshal(createContent);
-					crtType = unmarshal.getValue();
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					LOG.warning(ex.getMessage());
-				}
-				if (crtType != null) {
-					// extract the CreateResponseType instance
-					EndpointReferenceType resCreatedElement = crtType;
-					if ((resCreatedElement != null)
-							&& (resCreatedElement.getReferenceParameters() != null)
-							&& (resCreatedElement.getReferenceParameters()
-									.getAny() != null)) {
-						List<Object> refContents = resCreatedElement
-								.getReferenceParameters().getAny();
-						if ((refContents != null) && (refContents.size() > 0)) {
-							for (Object node : refContents) {
-								JAXBElement eprElement = (JAXBElement) node;
-								// locate the refParameter element that is the
-								// selectorSet
-								if (eprElement.getName().getLocalPart().equals(
-										Management.SELECTOR_SET.getLocalPart())) {
-									Document nod = Management.newDocument();
-									binding.marshal(node, nod);
+		//parse the Management instance passed in for ResourceCreated and
+		//  embedded selectors
+		if(managementMessage!=null){
+		 EndpointReferenceType crtType = null;
+		 if((managementMessage.getBody()!=null)&&
+			(managementMessage.getBody().getFirstChild()!=null)){
+			 //Extract dom component
+			Node createContent = managementMessage.getBody().getFirstChild();
+			try{
+			 final JAXBElement unmarshal = 
+				              (JAXBElement)binding.unmarshal(createContent);
+			 crtType = (EndpointReferenceType)unmarshal.getValue();
+			}catch(Exception ex){
+				ex.printStackTrace();
+				LOG.warning(ex.getMessage());
+			}
+			if(crtType!=null){
+				//extract the CreateResponseType instance
+				EndpointReferenceType resCreatedElement = crtType;
+			    if((resCreatedElement!=null)&&(resCreatedElement.getReferenceParameters()!=null)&&
+			    	(resCreatedElement.getReferenceParameters().getAny()!=null)){
+			      List<Object> refContents =
+			    	  resCreatedElement.getReferenceParameters().getAny();
+			      if((refContents!=null)&&(refContents.size()>0)){
+			    	  for(Object node: refContents){
+						JAXBElement eprElement = (JAXBElement) node;
+					  //locate the refParameter element that is the selectorSet
+					  if(eprElement.getName().getLocalPart().equals(
+							Management.SELECTOR_SET.getLocalPart())){
+						Document nod = Management.newDocument();
+							binding.marshal(node, nod );
 
-									final JAXBElement selSet = (JAXBElement) binding
-											.unmarshal(nod);
-									SelectorSetType sels = (SelectorSetType) selSet
-											.getValue();
-									if (sels != null) {
-										// extract the SelectorSet contents
-										selectors = ManagementUtility
-												.extractSelectorsAsMap(
-														selectors, sels
-																.getSelector());
-									}
-								}// end of if
-							}
-						}
-					}
-				}
+						final JAXBElement selSet =
+							(JAXBElement)binding.unmarshal(nod);
+						SelectorSetType sels = (SelectorSetType) selSet.getValue();
+			    		if(sels!=null){
+					      //extract the SelectorSet contents
+					     selectors= ManagementUtility.extractSelectorsAsMap(
+					    		 selectors,sels.getSelector());
+			    		}
+			    	  }//end of if
+			    	}
+			      }
+			    }
+			  }
 			}
 		}
 
 		return selectors;
 	}
 
-	/**
-	 * Convenience method to locate a specific SOAPElement from within the
-	 * SOAPHeader instance.
-	 * 
+	/** Convenience method to locate a specific SOAPElement from within the SOAPHeader
+	 * instance.
+	 *
 	 * @param header
 	 * @param element
 	 * @return the node
 	 */
 	private static Node containsHeader(SOAPHeader header, SOAPElement element) {
 		Node located = null;
-		NodeList chNodes = header.getChildNodes();
-		QName elementNode = element.getElementQName();
-		for (int i = 0; i < header.getChildNodes().getLength(); i++) {
-			Node elem = chNodes.item(i);
-			if ((elem.getLocalName().equals(elementNode.getLocalPart()))
-					&& (elem.getNamespaceURI().equals(elementNode
-							.getNamespaceURI()))) {
+		  NodeList chNodes = header.getChildNodes();
+		  QName elementNode = element.getElementQName();
+		  for (int i = 0; i < header.getChildNodes().getLength(); i++) {
+			 Node elem = chNodes.item(i);
+			 if((elem.getLocalName().equals(elementNode.getLocalPart()))&&
+				(elem.getNamespaceURI().equals(elementNode.getNamespaceURI()))){
 				located = elem;
-			}
-		}
+			 }
+		  }
 		return located;
 	}
 
 	/**
-	 * Extracts the addressing components from a Management message as an EPR
-	 * type. NOTE: The original EPR used to construct a message cannot be fully
-	 * reconstructed from the message as the metadata information marking the
-	 * reference parameters and properties is lost when the EPR is flattened out
-	 * into message headers.
-	 * 
-	 * @param message
-	 *            Management message
+	 * Extrcts the addressing components from a Management message
+	 * as an EPR type. NOTE: The original EPR used to contruct a
+	 * message cannot be fully reconstructed from the message as
+	 * the metadata information marking the reference parameters
+	 * and properties is lost when the EPR is flattened out into
+	 * message headers.
+	 *
+	 * @param message Management message
 	 * @return the Endpoint Reference extracted from the message
 	 * @throws JAXBException
 	 * @throws SOAPException
 	 */
 	public static EndpointReferenceType extractEprType(Management message)
 			throws JAXBException, SOAPException {
-		final EndpointReferenceType epr = addressing_factory
-				.createEndpointReferenceType();
-
+		final EndpointReferenceType epr = addressing_factory.createEndpointReferenceType();
+		
 		// ######## Address field
 		final AttributedURI to = addressing_factory.createAttributedURI();
 		to.setValue(message.getTo());
 		epr.setAddress(to);
-
+		
 		// ######## Reference Parameters
-		final ReferenceParametersType refParams = addressing_factory
-				.createReferenceParametersType();
-
+		final ReferenceParametersType refParams = 
+			  addressing_factory.createReferenceParametersType();
+		
 		// add the resourceUri
-		final SOAPElement resourceURI = ManagementUtility.locateHeader(message
-				.getHeaders(), Management.RESOURCE_URI);
+		final SOAPElement resourceURI = 
+			              ManagementUtility.locateHeader(message.getHeaders(),
+			            		                         Management.RESOURCE_URI);
 		if ((resourceURI != null)
 				&& (resourceURI.getTextContent().trim().length() > 0)) {
 			refParams.getAny().add(resourceURI);
 		}
-
-		// add the MetadataResourceUID if present.
-		String NS_PREFIX = "wsmeta";
+		
+		//add the MetadataResourceUID if present.
+	 	String NS_PREFIX ="wsmeta"; 
 		String NS_URI = "http://schemas.dmtf.org/wbem/wsman/1/wsman/version1.0.0.a/default-addressing-model.xsd";
-		QName metResourceUID = new QName(NS_URI, "ResourceMetaDataUID",
-				NS_PREFIX);
-		SOAPElement metDataUID = ManagementUtility.locateHeader(message
-				.getHeaders(), metResourceUID);
-		if ((metDataUID != null)
-				&& (metDataUID.getTextContent().trim().length() > 0)) {
-			refParams.getAny().add(metDataUID);
-		}
-
+	    QName metResourceUID = new QName(NS_URI,"ResourceMetaDataUID",NS_PREFIX);
+	    SOAPElement metDataUID = ManagementUtility.locateHeader(
+	    		message.getHeaders(), metResourceUID);
+	    if((metDataUID!=null)&&
+	    		(metDataUID.getTextContent().trim().length()>0)){
+	    	refParams.getAny().add(metDataUID);
+	    }
+		
+		
 		// add the SelectorSet if defined
-		final SOAPElement selectorSet = ManagementUtility.locateHeader(message
-				.getHeaders(), Management.SELECTOR_SET);
+		final SOAPElement selectorSet = ManagementUtility.locateHeader(message.getHeaders(),
+				                                                 Management.SELECTOR_SET);
 		if ((selectorSet != null) && (selectorSet.hasChildNodes())) {
 			refParams.getAny().add(selectorSet);
 		}
-
+		
 		if ((refParams.getAny() != null) && (refParams.getAny().size() > 0)) {
 			epr.setReferenceParameters(refParams);
 		}
 
-		// ######## Reference Properties cannot be reconstructed from the
-		// headers
+		// ######## Reference Properties cannot be recontstructed from the headers
 		return epr;
 	}
 
+
 	// ###################### GETTERS/SETTERS for instance
-	/*
-	 * Exposes the default uid scheme for the ManagementUtility instance.
-	 * 
-	 */
+    /* Exposes the default uid scheme for the ManagementUtility instance.
+     *
+     */
 	public static String getUidScheme() {
 		return uidScheme;
 	}
 
 	/**
-	 * @return the defaultTimeout in milliseconds.
+	 * @return the defaultTimeout
 	 */
 	public static long getDefaultTimeout() {
 		return defaultTimeout;
 	}
 
 	/**
-	 * Sets the default OperationTimeout.
-	 * This is the default used if Timeout is &lt;=0.
-	 * Value specified is in milliseconds.
-	 * Default is 30000 milliseconds (30 seconds).
-	 */
-	public static void setDefaultTimeout(final long operationTimeout) {
-		defaultTimeout = operationTimeout;
-	}
-	/**
-	 * Send an HTTP request and return the response as a ResourceState
-	 * 
-	 * @param response
-	 *            SOAP response
+	 * Send an http request and return the response as a ResourceState
+	 * @param response SOAP response
 	 * @return SOAP response as a ResourceState
 	 * @throws Exception
 	 */
-	public static ResourceStateDocument getAsResourceState(Addressing response)
-			throws Exception {
-		return new ResourceStateDocumentImpl(response.getEnvelope()
-				.getOwnerDocument());
+	public static ResourceStateDocument getAsResourceState(Addressing response) throws Exception {
+        return new ResourceStateDocumentImpl(response.getEnvelope().getOwnerDocument());
 
 	}
 
-	/**
-	 * Send an http request and return the response as a Addressing object
-	 * 
-	 * @param request
-	 *            SOAP request
-	 * @return SOAP response as a ResourceState
-	 * @throws Exception
-	 */
+    /**
+     * Send an http request and return the response as a Addressing object
+     * 
+     * @param request SOAP request
+     * @return SOAP response as a ResourceState
+     * @throws Exception
+     */
 	public static Addressing getRequest(Addressing request) throws Exception {
-		// Send the get request to the server
-		Addressing response = HttpClient.sendRequest(request);
+        // Send the get request to the server
+        Addressing response = HttpClient.sendRequest(request);
 
-		// Look for returned faults
-		if (response.getBody().hasFault()) {
-			SOAPFault fault = response.getBody().getFault();
-			throw new SOAPException(fault.getFaultString());
-		}
+        // Look for returned faults
+        if (response.getBody().hasFault())
+        {
+            SOAPFault fault = response.getBody().getFault();
+            throw new SOAPException(fault.getFaultString());
+        }
 
-		return response;
+        return response;
 
 	}
 
-	public static String xmlToString(Node node) {
+	 public static String xmlToString(Node node) {
 		try {
 			Source source = new DOMSource(node);
 			StringWriter stringWriter = new StringWriter();
@@ -677,32 +626,32 @@ public class ManagementUtility {
 		}
 		return null;
 	}
-
-	// //
-	// public static String locateClassInClasspath(String className) {
-	// String message = "";
-	// if (!className.startsWith("/")) {
-	// className = "/" + className;
-	// }
-	// className = className.replace('.', '/');
-	// className = className + ".class";
-	//	  
-	// java.net.URL classUrl =
-	// new ManagementUtility().getClass().getResource(className);
-	//	  
-	// String exc = null;
-	// if (classUrl != null) {
-	// exc = "\nClass '" + className +
-	// "' found in \n'" + classUrl.getFile() + "'";
-	// System.out.println(exc);
-	// } else {
-	// exc = "\nClass '" + className +
-	// "' not found in \n'";
-	// exc+=System.getProperty("java.class.path") + "'";
-	// System.out.println(exc);
-	// }
-	// message = exc;
-	// return message;
-	// }
+	 
+//	  //
+//	  public static String locateClassInClasspath(String className) {
+//		  String message = "";
+//	      if (!className.startsWith("/")) {
+//	          className = "/" + className;
+//	        }
+//	        className = className.replace('.', '/');
+//	        className = className + ".class";
+//	  
+//	        java.net.URL classUrl =
+//	          new ManagementUtility().getClass().getResource(className);
+//	  
+//	        String exc = null;
+//	        if (classUrl != null) {
+//	          exc = "\nClass '" + className +
+//	            "' found in \n'" + classUrl.getFile() + "'";
+//	          System.out.println(exc);
+//	        } else {
+//	          exc = "\nClass '" + className +
+//	            "' not found in \n'";
+//	          exc+=System.getProperty("java.class.path") + "'";
+//	          System.out.println(exc);
+//	        }
+//	        message = exc;
+//	      return message;  
+//	 }
 
 }

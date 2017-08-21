@@ -18,39 +18,17 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com), 
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt
  **
- **$Log: not supported by cvs2svn $
- **Revision 1.16  2007/12/18 11:55:46  denis_rachal
- **Changes to ensure access to member variables in context are synchronized properly for multi-thread access.
- **
- **Revision 1.15  2007/11/16 17:03:01  jfdenise
- **Added some checks and handle stop then start of the Timer.
- **
- **Revision 1.14  2007/11/16 15:12:13  jfdenise
- **Fix for bug 147 and 148
- **
- **Revision 1.13  2007/09/18 13:06:56  denis_rachal
- **Issue number:  129, 130 & 132
- **Obtained from:
- **Submitted by:
- **Reviewed by:
- **
- **129  ENHANC  P2  All  denis_rachal  NEW   Need support for ReNew Operation in Eventing
- **130  DEFECT  P3  x86  jfdenise  NEW   Should return a boolean variable result not a constant true
- **132  ENHANC  P3  All  denis_rachal  NEW   Make ServletRequest attributes available as properties in Ha
- **
- **Added enhancements and fixed issue # 130.
- **
+ **$Log: BaseContext.java,v $
  **Revision 1.12  2007/05/30 20:31:04  nbeers
  **Add HP copyright header
  **
  **
- * $Id: BaseContext.java,v 1.17 2008-01-17 15:19:09 denis_rachal Exp $
+ * $Id: BaseContext.java,v 1.12 2007/05/30 20:31:04 nbeers Exp $
  */
 
 package com.sun.ws.management.server;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -84,11 +62,10 @@ public class BaseContext {
 		}
 	}
     
+    private final XMLGregorianCalendar expiration;
     private final Filter filter;
-    private final ContextListener listener;
-    
-    private XMLGregorianCalendar expiration;
     private boolean deleted;
+    private final ContextListener listener;
     
     public BaseContext(final XMLGregorianCalendar expiry,
             final Filter filter,
@@ -101,7 +78,6 @@ public class BaseContext {
     }
     
     public String getExpiration() {
-    	if(expiration == null) return null;
         return expiration.toXMLFormat();
     }
     
@@ -113,12 +89,7 @@ public class BaseContext {
     	return this.filter;
     }
     
-    public synchronized Date getExpirationDate() {
-        if(expiration == null) return null;
-        return expiration.toGregorianCalendar().getTime();
-    }
-    
-    public synchronized boolean isExpired(final XMLGregorianCalendar now) {
+    public boolean isExpired(final XMLGregorianCalendar now) {
         if (expiration == null) {
             // no expiration defined, never expires
             return false;
@@ -126,15 +97,11 @@ public class BaseContext {
         return now.compare(expiration) > 0;
     }
     
-    public synchronized void renew(final XMLGregorianCalendar expires) {
-    	this.expiration = expires;
-    }
-    
-    public synchronized boolean isDeleted() {
+    public boolean isDeleted() {
     	return deleted;
     }
     
-    public synchronized void setDeleted() {
+    public void setDeleted() {
     	this.deleted = true;
     }
     

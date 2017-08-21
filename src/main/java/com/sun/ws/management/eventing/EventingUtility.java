@@ -19,7 +19,7 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com), 
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt 
  **
- **$Log: not supported by cvs2svn $
+ **$Log: EventingUtility.java,v $
  **Revision 1.6  2007/06/19 12:29:33  simeonpinder
  **changes:
  **-set 1.0 release implementation version
@@ -35,7 +35,7 @@
  **
  ** 
  *
- * $Id: EventingUtility.java,v 1.7 2008-01-17 15:19:09 denis_rachal Exp $
+ * $Id: EventingUtility.java,v 1.6 2007/06/19 12:29:33 simeonpinder Exp $
  */
 package com.sun.ws.management.eventing;
 
@@ -134,17 +134,14 @@ public class EventingUtility {
 			existingEvent.setSubscribeResponse(settings.getNotifyTo(), settings.getExpires());
 		} else if (settings.getEventingMessageActionType() == Eventing.RENEW_ACTION_URI) {
 			existingEvent.setRenew(settings.getExpires());
-			existingEvent.setIdentifier(settings.getIdentifier());
 		} else if (settings.getEventingMessageActionType() == Eventing.RENEW_RESPONSE_URI) {
 			existingEvent.setRenewResponse(settings.getExpires());
 		} else if (settings.getEventingMessageActionType() == Eventing.GET_STATUS_ACTION_URI) {
 			existingEvent.setGetStatus();
-			existingEvent.setIdentifier(settings.getIdentifier());
 		} else if (settings.getEventingMessageActionType() == Eventing.GET_STATUS_RESPONSE_URI) {
 			existingEvent.setGetStatusResponse(settings.getExpires());
 		} else if (settings.getEventingMessageActionType() == Eventing.UNSUBSCRIBE_ACTION_URI) {
 			existingEvent.setUnsubscribe();
-			existingEvent.setIdentifier(settings.getIdentifier());
 		} else if (settings.getEventingMessageActionType() == Eventing.SUBSCRIPTION_END_ACTION_URI) {
 			existingEvent.setSubscriptionEnd(settings.getEndTo(), settings.getStatus(), settings.getReason());
 		}

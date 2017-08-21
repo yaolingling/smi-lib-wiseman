@@ -19,13 +19,13 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com), 
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt 
  **
- **$Log: not supported by cvs2svn $
+ **$Log: ManagementMessageValues.java,v $
  **Revision 1.5  2007/05/30 20:31:05  nbeers
  **Add HP copyright header
  **
  ** 
  *
- * $Id: ManagementMessageValues.java,v 1.6 2007-11-30 14:32:37 denis_rachal Exp $
+ * $Id: ManagementMessageValues.java,v 1.5 2007/05/30 20:31:05 nbeers Exp $
  */
 package com.sun.ws.management;
 
@@ -106,7 +106,7 @@ public class ManagementMessageValues {
 
 	/** Instance has all the default values set. An empty
 	 * instance of Management is lazily instantiated to 
-	 * obtain a valid XmlBinding instance.
+	 * obtain a valid xmlbinding instance.
 	 * 
 	 * @throws SOAPException
 	 */
@@ -140,8 +140,7 @@ public class ManagementMessageValues {
 		return timeout;
 	}
 	/**
-	 * @param timeout the OperationTimeout to set.
-	 *                Value is in milliseconds.
+	 * @param timeout the timeout to set
 	 */
 	public void setTimeout(long timeout) {
 		this.timeout = timeout;
