@@ -18,35 +18,41 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com),
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt
  **
- **$Log: not supported by cvs2svn $
- **Revision 1.15  2007/09/18 20:08:55  nbeers
- **Add support for SOAP with attachments.  Issue #136.
- **
+ **$Log: Message.java,v $
  **Revision 1.14  2007/05/30 20:31:05  nbeers
  **Add HP copyright header
  **
  **
- * $Id: Message.java,v 1.16 2007-11-30 14:32:37 denis_rachal Exp $
+ * $Id: Message.java,v 1.14 2007/05/30 20:31:05 nbeers Exp $
  */
 
 package com.sun.ws.management;
 
+import com.sun.ws.management.addressing.Addressing;
+import com.sun.ws.management.enumeration.Enumeration;
+import com.sun.ws.management.eventing.Eventing;
+import com.sun.ws.management.transfer.Transfer;
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import com.sun.ws.management.identify.Identify;
+import com.sun.ws.management.server.WSManAgent;
+import com.sun.ws.management.soap.FaultException;
+import com.sun.ws.management.soap.SOAP;
+import com.sun.ws.management.transport.ContentType;
+import com.sun.ws.management.xml.XMLSchema;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.soap.AttachmentPart;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPBody;
@@ -56,23 +62,9 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import com.sun.ws.management.addressing.Addressing;
-import com.sun.ws.management.enumeration.Enumeration;
-import com.sun.ws.management.eventing.Eventing;
-import com.sun.ws.management.server.WSManAgent;
-import com.sun.ws.management.server.message.WSMessageStatus;
-import com.sun.ws.management.soap.FaultException;
-import com.sun.ws.management.soap.SOAP;
-import com.sun.ws.management.transfer.Transfer;
-import com.sun.ws.management.transport.ContentType;
-import com.sun.ws.management.xml.XMLSchema;
 
 public abstract class Message {
 
@@ -91,10 +83,6 @@ public abstract class Message {
     private SOAPEnvelope env = null;
     private SOAPHeader hdr = null;
     private SOAPBody body = null;
-    
-    private WSMessageStatus status = new WSMessageStatus();
-    
-    private ArrayList<AttachmentPart> attachments = null;
 
     private static Map<String,String> extensionNamespaces =null;
 
@@ -146,7 +134,6 @@ public abstract class Message {
         assert msgFactory != null : UNINITIALIZED;
         contentType = message.contentType;
         msg = message.msg;
-        status = message.getMessageStatus();
         init();
     }
 
@@ -157,14 +144,6 @@ public abstract class Message {
         init();
     }
 
-    public Message(final InputStream is, String inContentType) throws SOAPException, IOException {
-        assert msgFactory != null : UNINITIALIZED;
-        contentType = ContentType.DEFAULT_CONTENT_TYPE;
-        MimeHeaders inputSoapMimeHeader = new MimeHeaders();
-        inputSoapMimeHeader.setHeader("Content-Type", inContentType);
-        msg = msgFactory.createMessage(inputSoapMimeHeader, is);
-        init();
-    }
     public Message(final SOAPMessage message) throws SOAPException {
         assert msgFactory != null : UNINITIALIZED;
         String contentT = (String) message.getProperty(SOAPMessage.CHARACTER_SET_ENCODING);
@@ -181,7 +160,6 @@ public abstract class Message {
     public void setContentType(final ContentType ct) throws SOAPException {
         contentType = ct;
         msg.setProperty(SOAPMessage.CHARACTER_SET_ENCODING, contentType.getEncoding());
-        msg.getMimeHeaders().setHeader("Content-Type", contentType.getMimeType());
     }
 
     public abstract void validate() throws SOAPException, JAXBException, FaultException;
@@ -223,13 +201,6 @@ public abstract class Message {
         hdr = msg.getSOAPHeader();
         env = soap.getEnvelope();
         body = msg.getSOAPBody();
-        
-		Iterator iterator = msg.getAttachments();
-		attachments = new ArrayList<AttachmentPart>();
-		while (iterator.hasNext()) {
-			attachments.add(((AttachmentPart)(iterator.next())));
-		}
-		
     }
 
     private void addNamespaceDeclarations() throws SOAPException {
@@ -283,31 +254,5 @@ public abstract class Message {
 
     public SOAPBody getBody() {
         return body;
-    }
-
-	public ArrayList<AttachmentPart> getAttachments() {
-		return attachments;
-	}
-	
-	public AttachmentPart getAttachment(String contentId) {
-		AttachmentPart part = null;
-		
-		Iterator iterator = attachments.iterator();
-		while (iterator.hasNext() && part == null) {
-			AttachmentPart attachment = (AttachmentPart)iterator.next();
-			String id = attachment.getContentId();
-			if (contentId.equals(id)) {
-				part = attachment;
-			}
-		}
-		return part;
-	}
-	
-    public void setMessageStatus(final WSMessageStatus status) {
-        this.status = status;
-    }
-    
-    public WSMessageStatus getMessageStatus() {
-    	return this.status;
     }
 }

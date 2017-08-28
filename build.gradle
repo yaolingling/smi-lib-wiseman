@@ -81,14 +81,13 @@ task javadocJar(type: Jar) {
 
 repositories {
 	mavenLocal()
-	maven {
-		url "${artifactory_contextUrl}/${dependency_repo}"
-	}
+	maven { url "https://repo.maven.apache.org/maven2" }
 }
 
 dependencies {
-	compile "com.sun.xml.ws:jaxws-rt:2.1.7"
-        compile group: 'xerces', name: 'xercesImpl', version: '2.11.0'
+    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.0'
+    compileOnly group: 'com.sun.xml.fastinfoset', name: 'FastInfoset', version: '1.2.13'
+    compile group: 'xerces', name: 'xercesImpl', version: '2.11.0'
 }
 
 test {

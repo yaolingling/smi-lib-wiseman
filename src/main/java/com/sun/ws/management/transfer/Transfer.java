@@ -18,9 +18,12 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com),
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt
  **
- **$Log: not supported by cvs2svn $
+ **$Log: Transfer.java,v $
+ **Revision 1.6  2007/05/30 20:31:06  nbeers
+ **Add HP copyright header
  **
- * $Id: Transfer.java,v 1.6 2007-05-30 20:31:06 nbeers Exp $
+ **
+ * $Id: Transfer.java,v 1.6 2007/05/30 20:31:06 nbeers Exp $
  */
 
 package com.sun.ws.management.transfer;

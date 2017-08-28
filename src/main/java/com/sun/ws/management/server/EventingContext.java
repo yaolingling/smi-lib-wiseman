@@ -18,12 +18,12 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com),
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt
  **
- **$Log: not supported by cvs2svn $
+ **$Log: EventingContext.java,v $
  **Revision 1.6  2007/05/30 20:31:04  nbeers
  **Add HP copyright header
  **
  **
- * $Id: EventingContext.java,v 1.8 2007-12-20 20:47:52 jfdenise Exp $
+ * $Id: EventingContext.java,v 1.6 2007/05/30 20:31:04 nbeers Exp $
  */
 
 package com.sun.ws.management.server;

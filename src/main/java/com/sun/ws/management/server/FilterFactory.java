@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: FilterFactory.java,v 1.1 2006-12-05 10:34:43 jfdenise Exp $
+ * $Id: FilterFactory.java,v 1.1 2006/12/05 10:34:43 jfdenise Exp $
  */
 
 package com.sun.ws.management.server;

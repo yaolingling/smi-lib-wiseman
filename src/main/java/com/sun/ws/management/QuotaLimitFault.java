@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: QuotaLimitFault.java,v 1.2 2006-05-01 23:32:19 akhilarora Exp $
+ * $Id: QuotaLimitFault.java,v 1.2 2006/05/01 23:32:19 akhilarora Exp $
  */
 
 package com.sun.ws.management;

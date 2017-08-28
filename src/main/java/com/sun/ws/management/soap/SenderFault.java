@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: SenderFault.java,v 1.3 2006-05-01 23:32:24 akhilarora Exp $
+ * $Id: SenderFault.java,v 1.3 2006/05/01 23:32:24 akhilarora Exp $
  */
 
 package com.sun.ws.management.soap;

@@ -140,7 +140,7 @@ Copyright © 2006 Distributed Management Task Force, Inc. (DMTF). All rights res
     <xs:complexContent mixed="true">
       <xs:restriction base="xs:anyType">
         <xs:sequence>
-          <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+          <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
         </xs:sequence>
         <xs:anyAttribute namespace="##other" processContents="lax"/>
       </xs:restriction>

@@ -18,13 +18,7 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com),
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt
  **
- **$Log: not supported by cvs2svn $
- **Revision 1.22  2007/10/30 09:52:56  denis_rachal
- **Fix for NullPointerExection caused during error handling.
- **
- **Revision 1.21  2007/09/18 20:08:55  nbeers
- **Add support for SOAP with attachments.  Issue #136.
- **
+ **$Log: HttpClient.java,v $
  **Revision 1.20  2007/06/04 06:25:12  denis_rachal
  **The following fixes have been made:
  **
@@ -40,7 +34,7 @@
  **Add HP copyright header
  **
  **
- * $Id: HttpClient.java,v 1.24 2007-12-20 20:47:53 jfdenise Exp $
+ * $Id: HttpClient.java,v 1.20 2007/06/04 06:25:12 denis_rachal Exp $
  */
 
 package com.sun.ws.management.transport;
@@ -357,7 +351,7 @@ public final class HttpClient {
         final ContentType contentType = ContentType.createFromHttpContentType(responseType);
         if (contentType==null||!contentType.isAcceptable()) {
             // dump the first 4k bytes of the response for help in debugging
-            if ((LOG.isLoggable(Level.INFO)) && (null != is)) {
+            if (LOG.isLoggable(Level.INFO)) {
                 final byte[] buffer = new byte[4096];
                 final int nread = is.read(buffer);
                 if (nread > 0) {
@@ -371,7 +365,7 @@ public final class HttpClient {
 
         final Addressing addr;
         try {
-            addr = new Addressing(is, responseType);
+            addr = new Addressing(is);
         } finally {
             if (is != null) { is.close(); }
         }

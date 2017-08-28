@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: WSManJAXWSEndpoint.java,v 1.1 2007-04-06 09:57:51 jfdenise Exp $
+ * $Id: WSManJAXWSEndpoint.java,v 1.1 2007/04/06 09:57:51 jfdenise Exp $
  */
 
 package com.sun.ws.management.server.jaxws;

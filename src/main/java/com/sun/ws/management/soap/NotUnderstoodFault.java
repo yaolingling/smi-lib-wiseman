@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: NotUnderstoodFault.java,v 1.3 2006-05-01 23:32:23 akhilarora Exp $
+ * $Id: NotUnderstoodFault.java,v 1.3 2006/05/01 23:32:23 akhilarora Exp $
  */
 
 package com.sun.ws.management.soap;

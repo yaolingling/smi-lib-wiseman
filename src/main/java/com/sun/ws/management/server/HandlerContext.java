@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: HandlerContext.java,v 1.4 2007-09-18 13:06:56 denis_rachal Exp $
+ * $Id: HandlerContext.java,v 1.3 2007/03/28 14:23:08 jfdenise Exp $
  */
 
 package com.sun.ws.management.server;
@@ -25,7 +25,6 @@ import java.util.Map;
 public interface HandlerContext {
     public static final String JAX_WS_CONTEXT = "com.sun.management.transport.jaxws.context";
     public static final String SERVLET_CONTEXT = "com.sun.ws.management.transport.servlet.context";
-	public static final String SERVLET_REQUEST_ATTRIBUTES = "com.sun.ws.management.transport.servlet.request.attributes";
     public static final String MBEAN_SERVER = "com.sun.ws.management.mbeanserver";
     public static final String SUBJECT = "com.sun.ws.management.subject";
     public Map<String,?> getRequestProperties();

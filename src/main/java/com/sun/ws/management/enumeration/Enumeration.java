@@ -18,7 +18,7 @@
  ** Authors: Simeon Pinder (simeon.pinder@hp.com), Denis Rachal (denis.rachal@hp.com),
  ** Nancy Beers (nancy.beers@hp.com), William Reichardt
  **
- **$Log: not supported by cvs2svn $
+ **$Log: Enumeration.java,v $
  **Revision 1.20  2007/06/18 17:57:11  nbeers
  **Fix for Issue #119 (EnumerationUtility.buildMessage() generates incorrect msg).
  **
@@ -26,12 +26,11 @@
  **Add HP copyright header
  **
  **
- * $Id: Enumeration.java,v 1.21 2007-10-30 09:27:30 jfdenise Exp $
+ * $Id: Enumeration.java,v 1.20 2007/06/18 17:57:11 nbeers Exp $
  */
 
 package com.sun.ws.management.enumeration;
 
-import com.sun.ws.management.MessageUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -118,7 +117,23 @@ public class Enumeration extends Addressing {
             throws JAXBException, SOAPException {
 
         removeChildren(getBody(), ENUMERATE);
-        final Enumerate enu = MessageUtil.createEnumerate(endTo, expires, filter, anys);
+        final Enumerate enu = FACTORY.createEnumerate();
+        if (endTo != null) {
+            enu.setEndTo(endTo);
+        }
+        if (expires != null) {
+            enu.setExpires(expires.trim());
+        }
+        if (filter != null) {
+            enu.setFilter(filter);
+        }
+        if (anys != null) {
+            for (final Object any : anys) {
+            	if (any != null) {
+                   enu.getAny().add(any);
+            	}
+            }
+        }
         getXmlBinding().marshal(enu, getBody());
     }
 
@@ -158,7 +173,21 @@ public class Enumeration extends Addressing {
 
         removeChildren(getBody(), PULL);
         removeChildren(getBody(), ENUMERATE);
-        final Pull pull = MessageUtil.createPull(context, maxChars, maxElements, maxDuration);
+        final Pull pull = FACTORY.createPull();
+
+        final EnumerationContextType contextType = FACTORY.createEnumerationContextType();
+        contextType.getContent().add(context);
+        pull.setEnumerationContext(contextType);
+
+        if (maxChars > 0) {
+            pull.setMaxCharacters(BigInteger.valueOf((long) maxChars));
+        }
+        if (maxElements > 0) {
+            pull.setMaxElements(BigInteger.valueOf((long) maxElements));
+        }
+        if (maxDuration != null) {
+            pull.setMaxTime(maxDuration);
+        }
 
         getXmlBinding().marshal(pull, getBody());
     }

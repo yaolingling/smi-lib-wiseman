@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: FaultException.java,v 1.4 2006-05-01 23:32:23 akhilarora Exp $
+ * $Id: FaultException.java,v 1.4 2006/05/01 23:32:23 akhilarora Exp $
  */
 
 package com.sun.ws.management.soap;
